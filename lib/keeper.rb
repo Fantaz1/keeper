@@ -33,11 +33,11 @@ module Keeper
     end
 
     private
-    def select_in collection, key: key, id: id
+    def select_in collection, key: nil, id: nil
       collection.select{|o| o[key] == id }
     end
 
-    def find_in collection, key: key, id: id
+    def find_in collection, key: nil, id: nil
       collection.find{|o| o[key] == id }
     end
 
