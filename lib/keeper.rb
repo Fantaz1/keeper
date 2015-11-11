@@ -18,13 +18,13 @@ module Keeper
       end
 
       define_method "get_#{key.to_s.pluralize}" do |id|
-        hash = get_or_init_var("{__method__}_hash") { {} }
+        hash = get_hash(__method__)
 
         hash[id] ||= select_in(send(key), key: select, id: id)
       end
 
       define_method "get_#{key.to_s.singularize}" do |id|
-        hash = get_or_init_var("{__method__}_hash") { {} }
+        hash = get_hash(__method__)
 
         hash[id] ||= find_in(send(key), key: find, id: id)
       end
@@ -37,6 +37,10 @@ module Keeper
     end
 
     private
+    def get_hash name
+      get_or_init_var("#{name}_hash".gsub('get_', '')) { {} }
+    end
+
     def select_in collection, key: nil, id: nil
       collection.select{|o| o[key] == id }
     end
