@@ -18,13 +18,13 @@ module Keeper
       end
 
       define_method "get_#{key.to_s.pluralize}" do |id|
-        hash = get_or_init_var("@{key.to_s.pluralize}_hash") { {} }
+        hash = get_or_init_var("{__method__}_hash") { {} }
 
         hash[id] ||= select_in(send(key), key: select, id: id)
       end
 
       define_method "get_#{key.to_s.singularize}" do |id|
-        hash = get_or_init_var("@{key.to_s.singularize}_hash") { {} }
+        hash = get_or_init_var("{__method__}_hash") { {} }
 
         hash[id] ||= find_in(send(key), key: find, id: id)
       end
