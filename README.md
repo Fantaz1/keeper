@@ -18,13 +18,16 @@ Or install it yourself as:
 
 ## Usage
 
+*app/models*
 ```ruby
 class Company < ActiveRecord::Base
   has_many :users
 end
+
 class Address < ActiveRecord::Base
   has_many :users
 end
+
 class User < ActiveRecord::Base
   belongs_to :company
   belongs_to :address
@@ -32,15 +35,20 @@ class User < ActiveRecord::Base
   has_many :posts
   has_many :comments
 end
+
 class Post < ActiveRecord::Base
   belongs_to :user
   has_many :comments
 end
+
 class Comment < ActiveRecord::Base
   belongs_to :post
   belongs_to :user
 end
+```
 
+*Keeper class*
+```ruby
 class MyKeeper < Keeper::Base
   def initialize company
     @company = company
@@ -77,6 +85,19 @@ keeper.get_comments(user.id)              # get all comment that user with a giv
 keeper.get_comment(40)                    # get instance of comment with ID 40 (no request)
 ```
 
+As you can see it sends only 3 requests to database:
+- One to get all users
+- One to get all posts
+- One to get all comments
+
+And that's all. You can get all nessesary data from this storage without any new requests to database.
+
+If you will want to get all such comment in a regular way, you will do something like this:
+
+```ruby
+users = @company.users.best_writers
+
+```
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `bin/console` for an interactive prompt that will allow you to experiment.

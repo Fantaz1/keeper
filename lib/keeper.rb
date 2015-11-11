@@ -18,11 +18,15 @@ module Keeper
       end
 
       define_method "get_#{key.to_s.pluralize}" do |id|
-        select_in(send(key), key: select, id: id)
+        hash = get_or_init_var("@{key.to_s.pluralize}_hash") { {} }
+
+        hash[id] ||= select_in(send(key), key: select, id: id)
       end
 
       define_method "get_#{key.to_s.singularize}" do |id|
-        find_in(send(key), key: find, id: id)
+        hash = get_or_init_var("@{key.to_s.singularize}_hash") { {} }
+
+        hash[id] ||= find_in(send(key), key: find, id: id)
       end
 
       define_method "#{key.to_s.pluralize}_ids" do
@@ -41,11 +45,11 @@ module Keeper
       collection.find{|o| o[key] == id }
     end
 
-    def get_or_init_var var_name, &block
+    def get_or_init_var var_name
       var_name = "@#{var_name}"
       var = instance_variable_get(var_name)
       if var.nil?
-        instance_variable_set(var_name, block.call)
+        instance_variable_set(var_name, yield)
       else
         var
       end
