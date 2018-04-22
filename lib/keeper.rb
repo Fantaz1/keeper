@@ -1,9 +1,11 @@
 require "keeper/version"
+require "active_support/inflector"
 
 module Keeper
   class Base
     def self.store key, find: :id, select: :id, &block
       mod = Module.new
+      const_set("#{key.to_s.upcase}_KEEPER_STORE", mod)
       mod.send(:define_method, "#{key}_content", block)
       include mod
 
